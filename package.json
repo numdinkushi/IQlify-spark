@@ -1,0 +1,23 @@
+{
+  "name": "iqlify-spark",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @iqlify-spark/web",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "convex:dev": "npx convex dev",
+    "contracts:compile": "npm run compile --workspace @iqlify-spark/contracts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "convex": "^1.42.1"
+  }
+}

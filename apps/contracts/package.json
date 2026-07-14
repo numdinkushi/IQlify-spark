@@ -1,0 +1,21 @@
+{
+  "name": "@iqlify-spark/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monad smart contracts for IQlify Spark reward distribution",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "clean": "hardhat clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/node": "^20.8.0",
+    "hardhat": "^2.22.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0"
+  }
+}
