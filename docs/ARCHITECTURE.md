@@ -1,6 +1,6 @@
 # Architecture
 
-IQlify ports the interview-and-reward loop from Celo to Monad, using Goalaxify's monorepo conventions.
+IQlify is an AI voice interview practice app with onchain rewards on Monad.
 
 ## Layers
 
@@ -27,14 +27,9 @@ flowchart LR
   Chain --> Convex
 ```
 
-## Reference projects
-
-- **IQlify (reference only):** interview types, grading model, reward claim pattern
-- **Goalaxify (structure):** npm workspaces, package boundaries, Convex at repo root
-
 ## Intentionally deferred
 
-These IQlify features are out of scope for the initial scaffold:
+Out of scope for the initial scaffold:
 
 - Leaderboards
 - Challenges and entry fees

@@ -4,7 +4,7 @@ Step-by-step delivery for the Spark hackathon submission.
 
 ## Phase 0 — Scaffold (this commit)
 
-- [x] Goalaxify-style monorepo layout
+- [x] npm workspaces monorepo layout
 - [x] Next.js shell with placeholder home page
 - [x] Convex schema placeholder (`users` table)
 - [x] Hardhat workspace for Monad contracts

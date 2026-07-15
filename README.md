@@ -4,7 +4,7 @@
 
 IQlify is an AI voice interview practice app with onchain reward claims — rebuilt on Monad for the [Spark hackathon](https://buildanything.so/hackathons/spark?tab=overview) on BuildAnything.
 
-This repo uses the **Goalaxify monorepo style** (npm workspaces, shared packages, root-level Convex) while targeting the **IQlify product flow** (Vapi interviews, Gemini grading, reward claims).
+npm workspaces monorepo: Next.js app, Convex backend, shared packages, and Hardhat contracts — wired for Vapi interviews, Gemini grading, and Monad reward claims.
 
 ---
 
