@@ -12,10 +12,10 @@ Step-by-step delivery for the Spark hackathon submission.
 
 ## Phase 1 — Wallet + profile
 
-- [ ] RainbowKit + wagmi configured for Monad testnet
-- [ ] Connect wallet button and network display
-- [ ] Create/update Convex user on wallet connect
-- [ ] Basic profile page (display name, skill level)
+- [x] RainbowKit + wagmi configured for Monad testnet
+- [x] Connect wallet button and network display
+- [x] Create/update Convex user on wallet connect
+- [x] Basic profile page (display name, skill level)
 
 ## Phase 2 — Interview booth
 
