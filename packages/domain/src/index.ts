@@ -54,3 +54,5 @@ export interface RewardClaimDraft {
   nonce: number;
   deadline: number;
 }
+
+export { calculateEarningsMon, DURATION_MINUTES } from "./rewards";
