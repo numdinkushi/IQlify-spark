@@ -45,6 +45,8 @@ npm install
 cp .env.example .env
 ```
 
+Add `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` from [WalletConnect Cloud](https://cloud.walletconnect.com) (injected wallets still work without it for local testing).
+
 ### Convex
 
 ```bash
@@ -86,12 +88,11 @@ See [`.env.example`](.env.example). Key groups:
 ## Build plan (step by step)
 
 1. **Scaffold** — monorepo, Next.js shell, Convex schema placeholder
-2. **Wallet** — Monad wallet connection (RainbowKit + wagmi)
-3. **Profile** — user onboarding and Convex profile sync
-4. **Interview booth** — Vapi voice session flow
-5. **Grading** — Gemini scoring and feedback
-6. **Rewards** — deploy `RewardDistributor` on Monad testnet + claim flow
-7. **Polish** — demo video, README, submission assets
+2. **Wallet** — Monad wallet connection (RainbowKit + wagmi) + profile
+3. **Interview booth** — Vapi voice session flow
+4. **Grading** — Gemini scoring and feedback
+5. **Rewards** — deploy `RewardDistributor` on Monad testnet + claim flow
+6. **Polish** — demo video, README, submission assets
 
 See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md) for details.
 
