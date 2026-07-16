@@ -18,9 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
+import { useProfileImageUpload } from "@/hooks/use-profile-image-upload";
 import { useProfile } from "@/components/providers/profile-provider";
 import { api } from "@/lib/convex";
 import { formatFriendlyDate, shortWalletAddress } from "@/lib/utils/format";
+import { toast } from "sonner";
 
 const SKILL_LEVELS: { value: SkillLevel; label: string }[] = [
   { value: "beginner", label: "Beginner" },
@@ -33,6 +35,14 @@ export function ProfileDetailsTab() {
   const { user } = useProfile();
   const updateProfile = useMutation(api.users.updateProfile);
   const { copied, copy } = useCopyToClipboard();
+  const {
+    inputRef,
+    uploading,
+    error: uploadError,
+    previewUrl,
+    openPicker,
+    onFileChange,
+  } = useProfileImageUpload();
 
   const [displayName, setDisplayName] = useState("");
   const [skillLevel, setSkillLevel] = useState<SkillLevel>("intermediate");
@@ -46,6 +56,7 @@ export function ProfileDetailsTab() {
   }, [user]);
 
   const displayLabel = displayName.trim() || shortWalletAddress(address, 4);
+  const imageUrl = previewUrl || user?.profileImage;
 
   async function saveProfile() {
     if (!address) return;
@@ -57,8 +68,12 @@ export function ProfileDetailsTab() {
         displayName: displayName.trim(),
         skillLevel,
       });
+      toast.success("Profile saved");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save profile");
+      const message =
+        err instanceof Error ? err.message : "Could not save profile";
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -69,13 +84,41 @@ export function ProfileDetailsTab() {
       <Card className="iqlify-card border-accent/20">
         <CardContent className="space-y-5 p-5">
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-            <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border border-border/70 bg-muted/40">
-              <span className="flex size-full items-center justify-center bg-brand-gradient text-brand-ink">
-                <UserRound className="size-10" />
-              </span>
-              <span className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity hover:opacity-100">
-                <Camera className="size-5 text-white" />
-              </span>
+            <div className="relative">
+              <input
+                ref={inputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={(event) => void onFileChange(event)}
+              />
+              <button
+                type="button"
+                onClick={openPicker}
+                disabled={uploading || !address}
+                aria-label="Upload profile picture"
+                className="group relative size-24 shrink-0 overflow-hidden rounded-2xl border border-border/70 bg-muted/40 outline-none transition-opacity disabled:opacity-60"
+              >
+                {imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={imageUrl}
+                    alt=""
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  <span className="flex size-full items-center justify-center bg-brand-gradient text-brand-ink">
+                    <UserRound className="size-10" />
+                  </span>
+                )}
+                <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                  {uploading ? (
+                    <Loader2 className="size-5 animate-spin text-white" />
+                  ) : (
+                    <Camera className="size-5 text-white" />
+                  )}
+                </span>
+              </button>
             </div>
 
             <div className="min-w-0 flex-1 space-y-1">
@@ -86,8 +129,13 @@ export function ProfileDetailsTab() {
                 {shortWalletAddress(address, 6)}
               </p>
               <p className="text-xs text-muted-foreground">
-                Profile image uploads coming in a later phase
+                {uploading
+                  ? "Uploading…"
+                  : "Tap the photo to upload a profile image"}
               </p>
+              {uploadError ? (
+                <p className="text-xs text-destructive">{uploadError}</p>
+              ) : null}
             </div>
           </div>
 

@@ -55,3 +55,23 @@ export function resolveMonadChainId(
     ? parsed
     : MONAD_NETWORKS[network].chainId;
 }
+
+/**
+ * Pick the reward contract address for the active network.
+ * Falls back to the legacy single-address var so old envs keep working.
+ */
+export function resolveRewardContractAddress(
+  network: MonadNetwork,
+  addresses: {
+    testnet?: string;
+    mainnet?: string;
+    fallback?: string;
+  },
+): string | undefined {
+  const preferred =
+    network === "mainnet" ? addresses.mainnet : addresses.testnet;
+  const value = preferred?.trim() || addresses.fallback?.trim();
+  return value && value.startsWith("0x") && value.length === 42
+    ? value
+    : undefined;
+}

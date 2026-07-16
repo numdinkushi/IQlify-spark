@@ -5,6 +5,7 @@ export {
   resolveMonadChainId,
   resolveMonadNetwork,
   resolveMonadRpcUrl,
+  resolveRewardContractAddress,
   type MonadNetwork,
   type MonadNetworkConfig,
 } from "./monad-network";

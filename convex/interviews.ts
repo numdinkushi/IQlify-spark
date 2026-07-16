@@ -85,7 +85,10 @@ export const updateInterview = mutation({
       if (user) {
         await ctx.db.patch(user._id, {
           totalInterviews: user.totalInterviews + 1,
-          totalEarnings: user.totalEarnings + (args.earnings || 0),
+          totalEarnings:
+            Math.round(
+              (user.totalEarnings + (args.earnings || 0)) * 100,
+            ) / 100,
           currentStreak: user.currentStreak + 1,
           updatedAt: Date.now(),
         });

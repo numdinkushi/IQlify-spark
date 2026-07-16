@@ -13,6 +13,7 @@ interface ProfileUser {
   walletAddress: string;
   displayName?: string;
   skillLevel?: "beginner" | "intermediate" | "advanced";
+  profileImage?: string;
   totalEarnings?: number;
   currentStreak?: number;
   totalInterviews?: number;

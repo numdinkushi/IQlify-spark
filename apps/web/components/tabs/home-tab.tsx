@@ -25,6 +25,7 @@ import {
 import { TabType } from "@/lib/constants";
 import { useAppState } from "@/hooks/use-app-state";
 import { api } from "@/lib/convex";
+import { formatMonAmount } from "@/lib/utils/format";
 import { activeChain } from "@/lib/wagmi/chains";
 
 export function HomeTab() {
@@ -129,6 +130,14 @@ function WelcomeScreen() {
 function Dashboard({ address }: { address: string }) {
   const { setCurrentTab } = useAppState();
   const user = useQuery(api.users.getByWallet, { walletAddress: address });
+  const rewards = useQuery(api.users.getRewardBreakdown, {
+    walletAddress: address,
+  });
+
+  const claimed = rewards?.claimed ?? 0;
+  const unclaimed = rewards?.unclaimed ?? 0;
+  const total = rewards?.total ?? user?.totalEarnings ?? 0;
+  const claimedPct = total > 0 ? (claimed / total) * 100 : 0;
 
   return (
     <div className="iqlify-grid-bg px-4 py-6">
@@ -142,26 +151,63 @@ function Dashboard({ address }: { address: string }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="iqlify-card border-accent/20">
-            <CardContent className="space-y-1 p-4">
-              <Coins className="size-5 text-accent" />
-              <p className="text-xs text-muted-foreground">Total earnings</p>
-              <p className="text-xl font-semibold">
-                {user?.totalEarnings ?? 0} MON
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="iqlify-card border-accent/20">
-            <CardContent className="space-y-1 p-4">
-              <Target className="size-5 text-accent" />
-              <p className="text-xs text-muted-foreground">Current streak</p>
-              <p className="text-xl font-semibold">
-                {user?.currentStreak ?? 0} days
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="iqlify-card border-accent/20">
+          <CardContent className="space-y-3 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Coins className="size-5 text-accent" />
+                  <p className="text-xs text-muted-foreground">Rewards earned</p>
+                </div>
+                <p className="text-xl font-semibold tabular-nums">
+                  {formatMonAmount(total)}{" "}
+                  <span className="text-sm font-normal text-muted-foreground">
+                    MON
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-full bg-muted/60 px-2.5 py-1 text-xs text-muted-foreground">
+                <Target className="size-3.5 text-accent" />
+                <span className="tabular-nums">
+                  {user?.currentStreak ?? 0} day streak
+                </span>
+              </div>
+            </div>
+
+            <div
+              className="relative h-3 overflow-hidden rounded-full bg-brand-ink/60 ring-1 ring-accent/15"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(claimedPct)}
+              aria-label="Claimed versus unclaimed rewards"
+            >
+              <motion.div
+                className="absolute inset-y-0 left-0 rounded-full bg-brand-gradient"
+                initial={{ width: 0 }}
+                animate={{ width: `${claimedPct}%` }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              />
+              {unclaimed > 0 && total > 0 ? (
+                <div
+                  className="absolute inset-y-0 right-0 bg-brand-mist/35"
+                  style={{ width: `${100 - claimedPct}%` }}
+                />
+              ) : null}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-medium text-accent ring-1 ring-accent/25">
+                <span className="size-1.5 rounded-full bg-brand-lavender" />
+                Claimed {formatMonAmount(claimed)}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-mist/15 px-2.5 py-1 text-xs font-medium text-brand-mist ring-1 ring-brand-mist/25">
+                <span className="size-1.5 rounded-full bg-brand-mist" />
+                Unclaimed {formatMonAmount(unclaimed)}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="iqlify-card border-accent/20">
           <CardContent className="space-y-3 p-4">

@@ -5,7 +5,6 @@ import { useAccount, useChainId } from "wagmi";
 
 import { ConnectButtonStyled } from "@/components/wallet/connect-button-styled";
 import { ConnectedWalletMenu } from "@/components/wallet/connected-wallet-menu";
-import { NetworkBadge } from "@/components/wallet/network-badge";
 import { activeChain } from "@/lib/wagmi/chains";
 
 export function Navbar() {
@@ -25,7 +24,6 @@ export function Navbar() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <NetworkBadge />
           {isConnected && address && onTarget ? (
             <ConnectedWalletMenu />
           ) : (
