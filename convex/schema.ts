@@ -29,6 +29,7 @@ export default defineSchema({
     displayName: v.optional(v.string()),
     skillLevel: v.optional(skillLevelValidator),
     preferredLanguage: v.optional(v.string()),
+    profileImage: v.optional(v.string()),
     totalEarnings: v.number(),
     currentStreak: v.number(),
     totalInterviews: v.number(),

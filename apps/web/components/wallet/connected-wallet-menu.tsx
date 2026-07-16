@@ -9,7 +9,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NetworkBadge } from "@/components/wallet/network-badge";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { useProfile } from "@/components/providers/profile-provider";
@@ -73,6 +73,9 @@ export function ConnectedWalletMenu() {
             open ? "ring-accent/60" : "ring-accent/25 hover:ring-accent/50",
           )}
         >
+          {user?.profileImage ? (
+            <AvatarImage src={user.profileImage} alt="" />
+          ) : null}
           <AvatarFallback className="bg-brand-gradient text-xs font-semibold text-brand-ink">
             {initials}
           </AvatarFallback>

@@ -12,7 +12,10 @@ import {
 } from "@iqlify-spark/monad-rewards";
 
 import { api, type Id } from "@/lib/convex";
+import { getActiveRewardConfig } from "@/lib/rewards/config";
 import { activeChain } from "@/lib/wagmi/chains";
+import { toast } from "sonner";
+import { formatMonAmount } from "@/lib/utils/format";
 
 type ClaimState =
   | "idle"
@@ -39,8 +42,7 @@ export function useClaimReward(interviewId: Id<"interviews"> | undefined) {
     hash: txHash,
   });
 
-  const contractAddress = process.env
-    .NEXT_PUBLIC_REWARD_CONTRACT_ADDRESS as `0x${string}` | undefined;
+  const { contractAddress } = getActiveRewardConfig();
   const configured = isRewardContractConfigured({
     contractAddress,
     chainId: activeChain.id,
@@ -49,26 +51,34 @@ export function useClaimReward(interviewId: Id<"interviews"> | undefined) {
   const claim = useCallback(async () => {
     if (!interview || !address || !interviewId) return;
     if (!interview.earnings || interview.earnings <= 0) {
-      setError("No earnings to claim");
+      const message = "No earnings to claim";
+      setError(message);
       setState("error");
+      toast.error(message);
       return;
     }
     if (!configured || !contractAddress) {
-      setError("Reward contract not deployed yet");
+      const message = "Reward contract not deployed yet";
+      setError(message);
       setState("error");
+      toast.error(message);
       return;
     }
     if (interview.claimed) {
-      setError("Already claimed");
+      const message = "Already claimed";
+      setError(message);
       setState("error");
+      toast.error(message);
       return;
     }
 
     setError(null);
     setState("signing");
+    const toastId = toast.loading("Preparing claim…");
 
     try {
-      const amountWei = parseEther(String(interview.earnings));
+      // Avoid float dust so EIP-712 amount matches onchain wei cleanly
+      const amountWei = parseEther(Number(interview.earnings).toFixed(4));
       const nonce = Math.floor(Date.now() / 1000);
       const deadline = nonce + 10 * 60;
 
@@ -89,6 +99,7 @@ export function useClaimReward(interviewId: Id<"interviews"> | undefined) {
         throw new Error(signed.error || "Signing failed");
       }
 
+      toast.loading("Confirm in your wallet…", { id: toastId });
       setState("confirming");
       const hash = await writeContractAsync({
         address: contractAddress,
@@ -108,11 +119,18 @@ export function useClaimReward(interviewId: Id<"interviews"> | undefined) {
 
       setTxHash(hash);
       setState("pending");
+      toast.loading("Claim submitted…", { id: toastId });
       await markClaimed({ interviewId, txHash: hash });
       setState("success");
+      toast.success(
+        `Claimed ${formatMonAmount(interview.earnings)} MON`,
+        { id: toastId },
+      );
     } catch (err) {
       setState("error");
-      setError(err instanceof Error ? err.message : "Claim failed");
+      const message = err instanceof Error ? err.message : "Claim failed";
+      setError(message);
+      toast.error(message, { id: toastId });
     }
   }, [
     address,

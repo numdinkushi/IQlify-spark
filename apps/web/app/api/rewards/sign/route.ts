@@ -8,17 +8,12 @@ import {
   ZERO_REFERRAL_TAG,
 } from "@iqlify-spark/monad-rewards";
 
+import { getActiveRewardConfig } from "@/lib/rewards/config";
+
 export async function POST(req: NextRequest) {
   try {
     const signerKey = process.env.REWARD_SIGNER_PRIVATE_KEY;
-    const contractAddress =
-      process.env.NEXT_PUBLIC_REWARD_CONTRACT_ADDRESS ||
-      process.env.REWARD_CONTRACT_ADDRESS;
-    const chainId = Number(
-      process.env.NEXT_PUBLIC_MONAD_CHAIN_ID ||
-        process.env.REWARD_CHAIN_ID ||
-        10143,
-    );
+    const { contractAddress, chainId } = getActiveRewardConfig();
 
     if (!signerKey) {
       return NextResponse.json(

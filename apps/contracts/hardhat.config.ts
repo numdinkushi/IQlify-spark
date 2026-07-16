@@ -1,8 +1,19 @@
+import path from "node:path";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import dotenv from "dotenv";
+
+// Load monorepo root .env so DEPLOYER_PRIVATE_KEY etc. are available
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const MONAD_TESTNET_RPC =
   process.env.MONAD_TESTNET_RPC_URL ?? "https://testnet-rpc.monad.xyz";
+const MONAD_MAINNET_RPC =
+  process.env.MONAD_MAINNET_RPC_URL ?? "https://rpc.monad.xyz";
+
+const deployerAccounts = process.env.DEPLOYER_PRIVATE_KEY
+  ? [process.env.DEPLOYER_PRIVATE_KEY]
+  : [];
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -25,9 +36,12 @@ const config: HardhatUserConfig = {
     monadTestnet: {
       url: MONAD_TESTNET_RPC,
       chainId: 10143,
-      accounts: process.env.DEPLOYER_PRIVATE_KEY
-        ? [process.env.DEPLOYER_PRIVATE_KEY]
-        : [],
+      accounts: deployerAccounts,
+    },
+    monadMainnet: {
+      url: MONAD_MAINNET_RPC,
+      chainId: 143,
+      accounts: deployerAccounts,
     },
   },
 };

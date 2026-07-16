@@ -13,7 +13,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "convex:dev": "npx convex dev",
     "contracts:compile": "npm run compile --workspace @iqlify-spark/contracts",
-    "contracts:deploy:testnet": "npm run deploy:testnet --workspace @iqlify-spark/contracts"
+    "contracts:deploy:testnet": "npm run deploy:testnet --workspace @iqlify-spark/contracts",
+    "contracts:deploy:mainnet": "npm run deploy:mainnet --workspace @iqlify-spark/contracts"
   },
   "engines": {
     "node": ">=20"

@@ -26,6 +26,7 @@ import {
 import { useProfile } from "@/components/providers/profile-provider";
 import { ClaimRewardButton } from "@/components/interview/claim-reward-button";
 import { api, type Id } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   DURATION_OPTIONS,
   SKILL_OPTIONS,
@@ -42,6 +43,7 @@ import {
   isUuid,
   transcriptWordCount,
 } from "@/lib/vapi/transcript";
+import { formatMonAmount } from "@/lib/utils/format";
 
 type BoothPhase = "setup" | "live" | "grading" | "results";
 
@@ -118,6 +120,9 @@ export function InterviewBooth() {
           setFeedback(emptyFeedback);
           setEarnings(mon);
           setPhase("results");
+          toast.message("Interview completed", {
+            description: "Not enough conversation to grade this session.",
+          });
           return;
         }
 
@@ -153,10 +158,15 @@ export function InterviewBooth() {
         setFeedback(result.feedback || null);
         setEarnings(mon);
         setPhase("results");
+        toast.success("Interview graded", {
+          description: `Score ${overall}/100 · ${formatMonAmount(mon)} MON earned`,
+        });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Grading failed");
+        const message = err instanceof Error ? err.message : "Grading failed";
+        setError(message);
         await updateInterview({ interviewId: id, status: "failed" });
         setPhase("setup");
+        toast.error(message);
       }
     },
     [updateInterview],
@@ -315,7 +325,7 @@ export function InterviewBooth() {
           <CardTitle className="iqlify-accent-text">Results</CardTitle>
           <CardDescription>
             Score {score ?? interview?.score ?? "—"} / 100 · Earn{" "}
-            {earnings ?? interview?.earnings ?? 0} MON
+            {formatMonAmount(earnings ?? interview?.earnings)} MON
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

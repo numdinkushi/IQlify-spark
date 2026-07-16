@@ -15,3 +15,7 @@ export function formatFriendlyDate(timestamp?: number): string {
     year: "numeric",
   }).format(new Date(timestamp));
 }
+
+export function formatMonAmount(amount?: number): string {
+  return (amount ?? 0).toFixed(2);
+}

@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
       "wagmi",
     ],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+  },
   transpilePackages: [
     "@iqlify-spark/config",
     "@iqlify-spark/domain",
